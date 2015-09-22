@@ -27,4 +27,44 @@ module.exports = function(app)
 	app.get('/register', function(req, res){
 		res.render('register', {title:'Register'});
 	});
+	app.post('/register', function(req, res){
+		var name = req.body.name,
+			password = req.body.password,
+			password_re = req.body['password-repeat'];
+
+		if (password != password_re)
+		{
+			req.flash('error', 'The password must be the same');
+			return res.redirect('/register'); //redirect to the register page
+		}
+
+		var md5 = crypto.createHash('md5'),
+			password = md5.update(req.body.password).digest('hex');
+
+		var newUser = new User({
+			name : req.body.name,
+			password : password,
+			email : req.body.email
+		});
+
+		User.get(newUser.name, function(err, user){
+			if (user)
+			{
+				req.flash('error', 'The user existed');
+				return res.redirect('/register');
+			}
+		});
+
+		newUser.save(function(err, user){
+			if (err)
+			{
+				req.flash('error', err);
+				return res.redirect('/register');
+			}
+
+			req.session.user = user;
+			req.flash('success', 'Register success');
+			res.redirect('/');
+		});
+	});
 }
