@@ -10,8 +10,22 @@
 		<h1><%= title %></h1>
 	</header>
 	<nav>
-		<span><a title="Homepage" href="/">Home</a></span>
-		<span><a title="Login" href="/login">Login</a></span>
-		<span><a title="Register" href="/register">Register</a></span>
+		<span><a title="首頁" href="/">Home</a></span>
+		<% 
+		if ( typeof user !== 'undefined' && user )
+		{
+		%>
+			<span><a title="發表" href="/post">Post</a></span>
+			<span><a title="登出" href="/logout">Logout</a></span>
+		<%
+		}
+		else
+		{
+		%>
+			<span><a title="登入" href="/login">Login</a></span>
+			<span><a title="註冊" href="/register">Register</a></span>
+		<%
+		}
+		%>
 	</nav>
 	<article>
