@@ -18,6 +18,7 @@ User.prototype.save = function(callback)
 	};
 	//open the db
 	mongodb.open(function(err, db){
+		console.log('open mongodb');
 		if (err)
 		{
 			return callback(err); //return error message
@@ -25,6 +26,7 @@ User.prototype.save = function(callback)
 		db.collection('users', function (err, collection){
 			if (err)
 			{
+				mongodb.close();
 				return callback(err);
 			}
 
@@ -73,4 +75,5 @@ User.get = function(name, callback)
 			);
 		});
 	});
+	mongodb.close();
 };

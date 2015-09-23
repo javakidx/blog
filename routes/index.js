@@ -31,7 +31,7 @@ module.exports = function(app)
 		var name = req.body.name,
 			password = req.body.password,
 			password_re = req.body['password-repeat'];
-		console.log(name);
+	
 		if (password != password_re)
 		{
 			req.flash('error', 'The password must be the same');
@@ -53,6 +53,7 @@ module.exports = function(app)
 				req.flash('error', 'The user existed');
 				return res.redirect('/register');
 			}
+			console.log('User not found');
 		});
 
 		newUser.save(function(err, user){
