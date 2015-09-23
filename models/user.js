@@ -30,7 +30,7 @@ User.prototype.save = function(callback)
 
 			collection.insert(
 				user, 
-				{safe : true;}, 
+				{safe : true}, 
 				function (err, user)
 				{
 					mongodb.close();
