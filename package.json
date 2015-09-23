@@ -16,6 +16,6 @@
     "express-session" : "1.9.1",
     "connect-flash":"0.1.1",
     "mongodb":"1.4.15",
-    "connect-mongo":"0.8.2"
+    "connect-mongo":"0.8.2" //原書上的版本已不適用
   }
 }
