@@ -13,19 +13,48 @@ module.exports = function(app)
 {
 	app.get('/', function(req, res)
 	{
-		res.render('index', {title : 'Express'});
-	});
-	app.get('/nswbmw', function(req, res)
-	{
-		res.render('nswbmw');
+		//res.render('index', {title : 'Express'});
+		res.render('index', {
+			title : '主頁',
+			user : req.session.user,
+			success : req.flash('success').toString(),
+			error : req.flash('error').toString()
+		});
 	});
 	app.get('/login', function(req, res){
 		res.render('login', {title:'login'});
 	});
-	app.post('/login', function(req, res){});
+	app.post('/login', function(req, res){
+		var md5 = crypto.createHash('md5'),
+			password = md5.update(req.body.password).digest('hex');
+
+		User.get(req.body.name, function(err, user){
+			if (!user)
+			{
+				req.flash('error', '用戶不存在');
+				return res.redirect('/login');
+			}
+			
+			//檢查密碼
+			if (user.password != password)
+			{
+				req.flash('error', '密碼錯誤！');
+				return res.redirect('/login');
+			}
+			req.session.user = user;
+			req.flash('success', '登入成功');
+			res.redirect('/');
+		});
+	});
 
 	app.get('/register', function(req, res){
-		res.render('register', {title:'Register'});
+		//res.render('register', {title:'Register'});
+		res.render('register', {
+			title : '註冊', 
+			user :req.session.user,
+			success : req.flash('success').toString(),
+			error : req.flash('error').toString()
+		});
 	});
 	app.post('/register', function(req, res){
 		var name = req.body.name,
@@ -50,7 +79,7 @@ module.exports = function(app)
 		User.get(newUser.name, function(err, user){
 			if (user)
 			{
-				req.flash('error', 'The user existed');
+				req.flash('error', '用戶已存在');
 				return res.redirect('/register');
 			}
 			console.log('User not found');
@@ -64,8 +93,13 @@ module.exports = function(app)
 			}
 
 			req.session.user = user;
-			req.flash('success', 'Register success');
+			req.flash('success', '註冊成功！');
 			res.redirect('/');
 		});
+	});
+	app.get('/logout', function(req, res){
+		req.session.user = null;
+		req.flash('success', '登出成功');
+		res.redirect('/');
 	});
 }
