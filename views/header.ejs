@@ -29,3 +29,17 @@
 		%>
 	</nav>
 	<article>
+	<% 
+	if (typeof success !== 'undefined' && success)
+	{
+	%>
+		<div><%= success %></div>
+	<%
+	}
+	if (error)
+	{
+	%>
+		<div><%= error %></div>
+	<%
+	}
+	%>
