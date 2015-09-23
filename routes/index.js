@@ -31,11 +31,11 @@ module.exports = function(app)
 		var name = req.body.name,
 			password = req.body.password,
 			password_re = req.body['password-repeat'];
-
+		console.log(name);
 		if (password != password_re)
 		{
 			req.flash('error', 'The password must be the same');
-			return res.redirect('/register'); //redirect to the register page
+			return res.redirect('/'); //redirect to the register page
 		}
 
 		var md5 = crypto.createHash('md5'),
