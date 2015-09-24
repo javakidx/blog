@@ -1,5 +1,6 @@
 var crypto = require('crypto'),
-	User = require('../models/user.js');
+	User = require('../models/user.js'),
+	Post = require('../models/post.js');
 //var express = require('express');
 //var router = express.Router();
 
@@ -13,13 +14,20 @@ module.exports = function(app)
 {
 	app.get('/', function(req, res)
 	{
-		//res.render('index', {title : 'Express'});
-		res.render('index', {
-			title : '主頁',
-			user : req.session.user,
-			success : req.flash('success').toString(),
-			error : req.flash('error').toString()
-		});
+		Post.get(null, function(err, posts)
+		{
+			if (err)
+			{
+				posts = [];
+			}
+			res.render('index', {
+				title : '主頁',
+				user : req.session.user,
+				posts : posts,
+				success : req.flash('success').toString(),
+				error : req.flash('error').toString()
+			});
+		}
 	});
 	app.get('/register', checkNotLogin);
 	app.get('/register', function(req, res){
@@ -120,7 +128,17 @@ module.exports = function(app)
 	});
 	app.post('/post', checkLogin);
 	app.post('/post', function(req, res){
-		
+		var currentUser = req.session.user,
+			post = new Post(currentUser.name, req.body.title, req.body.post);
+		post.save(function(err){
+			if (err)
+			{
+				req.flash('error', err);
+				return res.redirect('/');
+			}
+			req.flash('success', '發佈成功');
+			res.redirect('/'); //回到首頁
+		});	
 	});
 	app.get('/logout', checkLogin);
 	app.get('/logout', function(req, res){
