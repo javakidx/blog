@@ -21,9 +21,72 @@ module.exports = function(app)
 			error : req.flash('error').toString()
 		});
 	});
-	app.get('/login', function(req, res){
-		res.render('login', {title:'login'});
+	app.get('/register', checkNotLogin);
+	app.get('/register', function(req, res){
+		//res.render('register', {title:'Register'});
+		res.render('register', {
+			title : '註冊', 
+			user :req.session.user,
+			success : req.flash('success').toString(),
+			error : req.flash('error').toString()
+		});
 	});
+	app.post('/register', function(req, res){
+		var name = req.body.name,
+			password = req.body.password,
+			password_re = req.body['password-repeat'];
+	
+		if (password != password_re)
+		{
+			req.flash('error', '兩次輸入的密碼不一致!');
+			return res.redirect('/register'); //redirect to the register page
+		}
+
+		var md5 = crypto.createHash('md5'),
+			password = md5.update(req.body.password).digest('hex');
+
+		var newUser = new User({
+			name : req.body.name,
+			password : password,
+			email : req.body.email
+		});
+
+		User.get(newUser.name, function(err, user){
+			if (err)
+			{
+				req.flash('error', err);
+				return res.redirect('/');
+			}
+			if (user)
+			{
+				req.flash('error', '用戶已存在');
+				return res.redirect('/register');
+			}
+			console.log('User not found');
+		});
+
+		newUser.save(function(err, user){
+			if (err)
+			{
+				req.flash('error', err);
+				return res.redirect('/register');
+			}
+
+			req.session.user = user;
+			req.flash('success', '註冊成功！');
+			res.redirect('/');
+		});
+	});
+	app.get('/login', checkNotLogin);
+	app.get('/login', function(req, res){
+		res.render('login', {
+			title:'登入',
+			user : req.session.user,
+			success : req.flash('success').toString(),
+			error : req.flash('error').toString()
+		});
+	});
+	app.post('/login', checkNotLogin);
 	app.post('/login', function(req, res){
 		var md5 = crypto.createHash('md5'),
 			password = md5.update(req.body.password).digest('hex');
@@ -46,60 +109,43 @@ module.exports = function(app)
 			res.redirect('/');
 		});
 	});
-
-	app.get('/register', function(req, res){
-		//res.render('register', {title:'Register'});
-		res.render('register', {
-			title : '註冊', 
-			user :req.session.user,
+	app.get('/post', checkLogin);
+	app.get('/post', function(req, res){
+		res.render('post', {
+			title : '發表文章',
+			user : req.session.user,
 			success : req.flash('success').toString(),
 			error : req.flash('error').toString()
-		});
+		});	
 	});
-	app.post('/register', function(req, res){
-		var name = req.body.name,
-			password = req.body.password,
-			password_re = req.body['password-repeat'];
-	
-		if (password != password_re)
-		{
-			req.flash('error', 'The password must be the same');
-			return res.redirect('/'); //redirect to the register page
-		}
-
-		var md5 = crypto.createHash('md5'),
-			password = md5.update(req.body.password).digest('hex');
-
-		var newUser = new User({
-			name : req.body.name,
-			password : password,
-			email : req.body.email
-		});
-
-		User.get(newUser.name, function(err, user){
-			if (user)
-			{
-				req.flash('error', '用戶已存在');
-				return res.redirect('/register');
-			}
-			console.log('User not found');
-		});
-
-		newUser.save(function(err, user){
-			if (err)
-			{
-				req.flash('error', err);
-				return res.redirect('/register');
-			}
-
-			req.session.user = user;
-			req.flash('success', '註冊成功！');
-			res.redirect('/');
-		});
+	app.post('/post', checkLogin);
+	app.post('/post', function(req, res){
+		
 	});
+	app.get('/logout', checkLogin);
 	app.get('/logout', function(req, res){
 		req.session.user = null;
 		req.flash('success', '登出成功');
 		res.redirect('/');
 	});
+	
+	function checkLogin(req, res, next)
+	{
+		if (!req.session.user)
+		{
+			res.flash('error', '未登入!');
+			res.redirect('/login');
+		}
+		next();
+	}
+	
+	function checkNotLogin(req, res, next)
+	{
+		if (req.session.user)
+		{
+			req.flash('error', '已登入!');
+			res.redirect('back');
+		}
+		next();
+	}
 }
