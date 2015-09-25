@@ -50,30 +50,35 @@ User.prototype.save = function(callback)
 
 User.get = function(name, callback)
 {
+	console.log('start to find user..');
 	mongodb.open(function(err, db){
 		if (err)
 		{
+			console.log(err);
 			return callback(err);
 		}
+		//console.log('find user in collection...');
 		db.collection('users', function(err, collection){
+			//console.log(collection);
 			if (err)
 			{
 				mongodb.close();
 				return callback(err);
 			}
-			collection.findone(
+			console.log('find user by name: ' + name);
+			collection.findOne(
 				{name : name}, 
 				function(err, user)
 				{
 					mongodb.close();
 					if (err)
 					{
+						console.log(err);
 						return callback(err);
 					}
-					callback(user);
+					callback(null, user);
 				}
 			);
 		});
 	});
-	mongodb.close();
 };

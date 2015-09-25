@@ -65,7 +65,7 @@ Post.get = function(name, callback)
 			if (err)
 			{
 				mongodb.close();
-				reutnr callback(err);
+				return callback(err);
 			}
 			var query = {};
 			if (name)

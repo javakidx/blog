@@ -27,7 +27,7 @@ module.exports = function(app)
 				success : req.flash('success').toString(),
 				error : req.flash('error').toString()
 			});
-		}
+		});
 	});
 	app.get('/register', checkNotLogin);
 	app.get('/register', function(req, res){
@@ -96,6 +96,7 @@ module.exports = function(app)
 	});
 	app.post('/login', checkNotLogin);
 	app.post('/login', function(req, res){
+		console.log('start to verify...');
 		var md5 = crypto.createHash('md5'),
 			password = md5.update(req.body.password).digest('hex');
 
@@ -159,6 +160,7 @@ module.exports = function(app)
 	
 	function checkNotLogin(req, res, next)
 	{
+		console.log(req.session.user);
 		if (req.session.user)
 		{
 			req.flash('error', '已登入!');

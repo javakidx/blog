@@ -11,9 +11,9 @@ posts.forEach(function(post, index)
 		日期：<%= post.time.minute %>
 	</p>
 	<p>
-		<%- post.post %>
+		<%= post.post %>
 	</p>
 <%
-}
+});
 %>
 <%- include footer %>
