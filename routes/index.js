@@ -148,6 +148,16 @@ module.exports = function(app)
 		res.redirect('/');
 	});
 	
+	app.get('/upload', checkLogin);
+	app.get('/upload', function(req, res){
+		res.render('upload', {
+			title : '檔案上傳',
+			user : req.session.user,
+			success : req.flash('success').toString(),
+			error : req.flash('error').toString()
+		});
+	});
+	
 	function checkLogin(req, res, next)
 	{
 		if (!req.session.user)

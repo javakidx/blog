@@ -11,7 +11,8 @@ posts.forEach(function(post, index)
 		日期：<%= post.time.minute %>
 	</p>
 	<p>
-		<%= post.post %>
+		<% //這裡要用減號, 用等號會在網頁上顯示HTML TAG %>
+		<%- post.post %>
 	</p>
 <%
 });
