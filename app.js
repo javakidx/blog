@@ -20,11 +20,17 @@ app.use(session({
   store : new MongoStore({
     db : settings.db,
     host :settings.host,
-    port : settings.port,
-    auto_reconnect: true
+    port : settings.port
   })
 }));
 
+var multer = require('multer');
+app.use(multer({
+	dest : './public/images',
+	rename : function (fieldName, filename){
+		return filename;
+	}
+}));
 app.set('port', process.env.PORT || 3000);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
