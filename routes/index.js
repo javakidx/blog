@@ -1,6 +1,11 @@
 var crypto = require('crypto'),
 	User = require('../models/user.js'),
 	Post = require('../models/post.js');
+var React = require('react');
+var jsx = require('node-jsx');
+jsx.install();
+
+var Books = require('../views/index.jsx');
 //var express = require('express');
 //var router = express.Router();
 
@@ -12,6 +17,45 @@ var crypto = require('crypto'),
 //module.exports = router;
 module.exports = function(app)
 {
+	app.get('/react', function(req, res){
+		console.log('abc');
+//		res.redirect('/');
+		var books = [{
+				title: 'Professional Node.js',
+				read: false
+			}, {
+				title: 'Node.js Patterns',
+				read: true
+		}];
+
+		res.setHeader('Content-Type', 'text/html');
+		res.end(React.renderToStaticMarkup(
+			React.DOM.body(
+					null,
+					React.DOM.div({
+						id: 'container',
+						dangerouslySetInnerHTML: {
+							__html: React.renderToString(React.createElement(Books, {
+								books: books
+							}))
+						}
+					}),
+				React.DOM.script({
+					'id': 'initial-data',
+					'type': 'text/plain',
+					'data-json': JSON.stringify(books)
+				}),
+				React.DOM.script({
+					src: '/bundle.js'
+				})
+			)
+  		));	
+	});
+	app.get('/helloReact', function(req, res){
+		res.render('helloReact', {
+			title : '喲! React.js'
+		});
+	});
 	app.get('/', function(req, res)
 	{
 		Post.getAll(null, function(err, posts)
