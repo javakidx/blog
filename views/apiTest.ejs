@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+	<% 
+	if( dataSet && dataSet.result && dataSet.result.results.length > 0)
+	{
+		dataSet.result.results.forEach(function(data, index){
+	%>
+		<%= data.iid %><br/>
+	<%
+		});
+	}
+	%>
+</body>
+</html>

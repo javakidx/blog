@@ -25,7 +25,8 @@ Post.prototype.save = function(callback)
 		name : this.name,
 		time : time,
 		title : this.title,
-		post: this.post
+		post: this.post,
+    	comment : []
 	};
 
 	//打開資料庫
@@ -81,9 +82,56 @@ Post.getAll = function(name, callback)
 					return callback(err);
 				}
 				docs.forEach(function(doc){
-					doc.post = markdown.toHTML(doc.post);
+					if(doc && doc.comments)
+					{
+						doc.post = markdown.toHTML(doc.post);
+						doc.comments.forEach(function(comment){
+							comment.content = markdown.toHTML(comment.content);
+						});
+					}
 				});
 				callback(null, docs);
+			});
+			
+		});
+	});
+};
+Post.getTen = function(name, page, callback)
+{
+	mongodb.open(function(err, db)
+	{
+		if (err)
+		{
+			return callback(err);
+		}
+		db.collection('posts', function(err, collection){
+			if (err)
+			{
+				mongodb.close();
+				return callback(err);
+			}
+			var query = {};
+			if (name)
+			{
+				query.name = name;
+			}
+			collection.count(query, function(err, total){
+				collection.find(query, {
+					skip : (page - 1) * 10, 
+					limit : 10
+				}).sort({
+					time : -1
+				}).toArray(function(err, docs){
+					mongodb.close();
+					if (err)
+					{
+						return callback(err);
+					}
+					docs.forEach(function (doc){
+						doc.post = markdown.toHTML(doc.post);
+					});
+					callback(null, docs, total);
+				});
 			});
 			
 		});

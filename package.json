@@ -20,7 +20,8 @@
     "markdown": "0.5.0",
     "multer": "0.1.6",
 	"node-jsx" : "^0.13.3",
-	"react" : "^0.13.3"
+	"react" : "^0.13.3",
+	"request" : "2.64.0"
   },
   "devDependencies": {
     "react-tools": "^0.13.3"

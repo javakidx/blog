@@ -1,7 +1,9 @@
 var crypto = require('crypto'),
 	User = require('../models/user.js'),
-	Post = require('../models/post.js');
-var React = require('react');
+	Post = require('../models/post.js'),
+	Comment = require('../models/comment.js');
+var React = require('react'),
+	request = require('request');
 var jsx = require('node-jsx');
 jsx.install();
 
@@ -17,6 +19,26 @@ var Books = require('../views/index.jsx');
 //module.exports = router;
 module.exports = function(app)
 {
+	app.get('/extapi', function(req, res){
+		request('http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=ddb80380-f1b3-4f8e-8016-7ed9cba571d5&limit=10&offset=0', 
+				function(err, response, body){
+					if (err)
+					{
+						console.error(err);
+					}
+					else if(response.statusCode == 200)
+					{
+						//data = body;
+						data = JSON.parse(body);
+						//console.log(data);
+						res.render('apiTest', {dataSet : data});
+					}
+					else
+					{
+						return res.redirect('/');
+					}
+		});
+	});
 	app.get('/react', function(req, res){
 		console.log('abc');
 //		res.redirect('/');
@@ -58,16 +80,37 @@ module.exports = function(app)
 	});
 	app.get('/', function(req, res)
 	{
-		Post.getAll(null, function(err, posts)
-		{
+		var page = req.body.p ? parseInt(req.body.p) : 1;
+
+		// Post.getAll(null, function(err, posts)
+		// {
+		// 	if (err)
+		// 	{
+		// 		posts = [];
+		// 	}
+		// 	res.render('index', {
+		// 		title : '主頁',
+		// 		user : req.session.user,
+		// 		posts : posts,
+		// 		success : req.flash('success').toString(),
+		// 		error : req.flash('error').toString()
+		// 	});
+		// });
+
+		Post.getTen(null, page, function(err, posts, total){
 			if (err)
 			{
+				console.error(err);
 				posts = [];
 			}
+
 			res.render('index', {
-				title : '主頁',
-				user : req.session.user,
+				title : '',
 				posts : posts,
+				page : page,
+				isFirstPage : (page - 1) == 0,
+				isLastPage : ((page - 1) * 10 + posts.length) == total,
+				user : req.session.user,
 				success : req.flash('success').toString(),
 				error : req.flash('error').toString()
 			});
@@ -214,15 +257,35 @@ module.exports = function(app)
 				req.flash('error', '用戶不存在!');
 				return res.redirect('/');
 			}
-			Post.getAll(user.name, function(err, posts){
+
+			// Post.getAll(user.name, function(err, posts){
+			// 	if (err)
+			// 	{
+			// 		req.flash('error', err);
+			// 		return res.redirect('/');
+			// 	}
+			// 	res.render('user', {
+			// 		title : user.name,
+			// 		posts : posts,
+			// 		user : req.session.user,
+			// 		success : req.flash('success').toString(),
+			// 		error : req.flash('error').toString()
+			// 	});
+			// });
+			var page = req.body.p ? parseInt(req.body.p) : 1;
+			Post.getTen(user.name, page, function(err, posts, total){
 				if (err)
 				{
 					req.flash('error', err);
 					return res.redirect('/');
 				}
+
 				res.render('user', {
 					title : user.name,
 					posts : posts,
+					page : page,
+					isFirstPage : (page - 1) == 0,
+					isLastPage : ((page - 1) * 10 + posts.length) == total,
 					user : req.session.user,
 					success : req.flash('success').toString(),
 					error : req.flash('error').toString()
@@ -247,6 +310,32 @@ module.exports = function(app)
 		});
 	});
 	
+	app.post('/u/:name/:day/:title', function(req, res){
+		var date = new Date(),
+			time = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + 
+					date.getDate() + " " + date.getHours() + ":" + 
+					(date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
+
+		var comment = {
+			name : req.body.name,
+			email : req.body.email,
+			website : req.body.website,
+			time : time,
+			content : req.body.content
+		};
+		
+		var newComment = new Comment(req.params.name, req.params.day, req.params.title, comment);
+		newComment.save(function(err){
+			if (err)
+			{
+				console.error(err);
+				req.flash('error', err);
+				return res.redirect('back');
+			}
+			req.flash('success', '留言成功！');
+			res.redirect('back');
+		});
+	});
 	app.get('/edit/:name/:day/:title', checkLogin);
 	app.get('/edit/:name/:day/:title', function(req, res){
 		var currentUser = req.session.user;
