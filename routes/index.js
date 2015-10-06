@@ -22,10 +22,10 @@ module.exports = function(app)
 {
 	app.get('/youbike/:pg', function(req, res){
 		console.log(req.body);
-		var pageSize = 10,
-			offset = (req.params.pg ? parseInt(req.params.pg) - 1 : 0) * 10;
+		var pageSize = 20,
+			offset = (req.params.pg ? parseInt(req.params.pg) - 1 : 0) * pageSize;
 		console.log('offset: ' + offset);
-		request('http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=ddb80380-f1b3-4f8e-8016-7ed9cba571d5&limit=10&offset=' + offset, 
+		request('http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=ddb80380-f1b3-4f8e-8016-7ed9cba571d5&limit=' + pageSize + '&offset=' + offset, 
 				function(err, response, body){
 					if (err)
 					{
