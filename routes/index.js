@@ -8,6 +8,7 @@ var jsx = require('node-jsx');
 jsx.install();
 
 var Books = require('../views/index.jsx');
+var YouBikeSiteList = require('../views/YouBikeSiteList.jsx');
 //var express = require('express');
 //var router = express.Router();
 
@@ -19,8 +20,12 @@ var Books = require('../views/index.jsx');
 //module.exports = router;
 module.exports = function(app)
 {
-	app.get('/extapi', function(req, res){
-		request('http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=ddb80380-f1b3-4f8e-8016-7ed9cba571d5&limit=10&offset=0', 
+	app.get('/youbike/:pg', function(req, res){
+		console.log(req.body);
+		var pageSize = 10,
+			offset = (req.params.pg ? parseInt(req.params.pg) - 1 : 0) * 10;
+		console.log('offset: ' + offset);
+		request('http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=ddb80380-f1b3-4f8e-8016-7ed9cba571d5&limit=10&offset=' + offset, 
 				function(err, response, body){
 					if (err)
 					{
@@ -29,9 +34,63 @@ module.exports = function(app)
 					else if(response.statusCode == 200)
 					{
 						//data = body;
-						data = JSON.parse(body);
-						//console.log(data);
-						res.render('apiTest', {dataSet : data});
+						var data = JSON.parse(body),
+							sites = data.result.results ||[];
+						//console.log(body);
+						
+						//res.render('apiTest', {dataSet : data});
+						//res.setHeader('Content-Type', 'text/html');
+
+						var htmlPeice = React.renderToStaticMarkup(
+									React.DOM.div({
+										id: 'container',
+										className : 'container',
+										style : {'margin-top' : '50px'},
+										dangerouslySetInnerHTML: {
+											__html: React.renderToString(React.createElement(YouBikeSiteList, {
+												siteList: sites
+											}))
+										}
+									})
+								);
+						// var htmlPeice = React.renderToStaticMarkup(
+						// 		React.DOM.html(
+						// 			null, 
+						// 			React.DOM.head(
+						// 			 	null,
+						// 			 	React.DOM.link({
+						// 			 		'type' : 'text/css',
+						// 			 		'rel' : 'stylesheet',
+						// 			 		'href' : 'css/bootstrap.min.css'
+						// 			 	})
+						// 			 ),
+						// 			React.DOM.body(
+						// 				null,
+						// 				React.DOM.div({
+						// 					id: 'container',
+						// 					dangerouslySetInnerHTML: {
+						// 						__html: React.renderToString(React.createElement(YouBikeSiteList, {
+						// 							siteList: sites
+						// 						}))
+						// 					}
+						// 				}),
+						// 				React.DOM.script({
+						// 					'type': 'text/javascript',
+						// 					'src': 'js/jquery.min.js'
+						// 				}),
+						// 				React.DOM.script({
+						// 					'type': 'text/javascript',
+						// 					'src': 'js/bootstrap.min.js'
+						// 				})
+						// 			)
+				  // 				)
+						// 	);
+						//res.end(htmlPeice); //render all html with React
+						//console.log(htmlPeice);
+						res.render('myLayout',{
+							title : 'YouBike',
+							htmlPeice : htmlPeice
+						});	
 					}
 					else
 					{
