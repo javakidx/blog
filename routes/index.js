@@ -23,6 +23,9 @@ module.exports = function(app)
 	app.get('/yyy', function(req, res){
 		res.end('Hello');
 	});
+    app.get('/youbike', function(req, res){
+        res.render('youBike');
+    });
 	app.get('/youbike/:pg', function(req, res)
 	{
 		var pageSize = 20,
