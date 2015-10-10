@@ -41,6 +41,9 @@ module.exports = function(app)
 //		);
 //		res.end(htmlPeice);
 //	});
+    app.get('/youbike', function(req, res){
+        res.render('youBike');
+    });
 	app.get('/youbike/:pg', function(req, res)
 	{
 		var pageSize = 20,
