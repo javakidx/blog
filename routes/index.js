@@ -1,11 +1,10 @@
 var crypto = require('crypto'),
 	User = require('../models/user.js'),
 	Post = require('../models/post.js'),
-	Comment = require('../models/comment.js');
-var React = require('react'),
-	request = require('request');
-var jsx = require('node-jsx');
-jsx.install();
+	Comment = require('../models/comment.js'),
+	React = require('react'),
+	request = require('request'),
+	jsx = require('node-jsx').install();
 
 var Books = require('../views/index.jsx');
 var YouBikeSiteList = require('../views/YouBikeSiteList.jsx');
@@ -20,9 +19,28 @@ var YouBikeSiteList = require('../views/YouBikeSiteList.jsx');
 //module.exports = router;
 module.exports = function(app)
 {
-	app.get('/yyy', function(req, res){
-		res.end('Hello');
-	});
+//	app.get('/yyy', function(req, res){
+//		var htmlPeice = React.renderToStaticMarkup(
+//					React.DOM.html(
+//						null, 
+//						React.DOM.head(
+//						 	null,
+//						 	React.DOM.link({
+//								'type' : 'text/css',
+//								'rel' : 'stylesheet',
+//								'href' : 'css/bootstrap.min.css'
+//							})
+//						),
+//						React.DOM.body(
+//							null,
+//							React.DOM.div({
+//								id: 'container',
+//							})
+//						)
+//				 )
+//		);
+//		res.end(htmlPeice);
+//	});
 	app.get('/youbike/:pg', function(req, res)
 	{
 		var pageSize = 20,
