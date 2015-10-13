@@ -9,10 +9,11 @@ var flash = require("connect-flash");
 var routes = require('./routes/index');
 //var users = require('./routes/users');
 var session = require('express-session');
-var MongoStore = require('connect-mongo')(session);
+//var MongoStore = require('connect-mongo')(session);
 
 var app = express();
 
+/*
 app.use(session({
   secret : settings.cookieSecret,
   key: settings.db,
@@ -23,7 +24,7 @@ app.use(session({
     port : settings.port
   })
 }));
-
+*/
 var multer = require('multer');
 app.use(multer({
 	dest : './public/images',

@@ -44,6 +44,21 @@ module.exports = function(app)
     app.get('/youbike', function(req, res){
         res.render('youBike');
     });
+    app.get('/youbike/:pageSize/:offset', function(req, res){
+		var pageSize = req.params.pageSize,
+			offset = req.params.offset;
+		request('http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=ddb80380-f1b3-4f8e-8016-7ed9cba571d5&limit=' + pageSize + '&offset=' + offset, 
+				function(err, response, body){
+					if(err)
+					{
+						console.log(err);
+					}
+					else if(response.statusCode == 200)
+					{
+						res.end(body);
+					}
+		})
+    });
 	app.get('/youbike/:pg', function(req, res)
 	{
 		var pageSize = 20,
