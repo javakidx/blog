@@ -1,0 +1,5 @@
+div.youBikeTable .row > .column{float: left;width: 150px;height:45px;display: block;}
+div.youBikeTable >  .dataHead{width: 800px;margin: auto;background-color: #f5f5f5;font-size: 16px;text-align: center;padding-top: 10px;}
+div.youBikeTable > .dataBody{width: 800px;margin: auto;text-align: center;}
+div.youBikeTable .row{margin: 5px 15px;}
+div.youBikeView {text-align:center;}

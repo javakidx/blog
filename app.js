@@ -13,6 +13,7 @@ var session = require('express-session');
 
 var app = express();
 
+global.React = require('react');
 /*
 app.use(session({
   secret : settings.cookieSecret,

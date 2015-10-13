@@ -7,7 +7,7 @@ var crypto = require('crypto'),
 	jsx = require('node-jsx').install();
 
 var Books = require('../views/index.jsx');
-var YouBikeSiteList = require('../views/YouBikeSiteList.jsx');
+var YouBikeSiteTable = require('../views/YouBikeSiteTable.js');
 //var express = require('express');
 //var router = express.Router();
 
@@ -86,7 +86,7 @@ module.exports = function(app)
 										className : 'container',
 										style : {'margin-top' : '50px'},
 										dangerouslySetInnerHTML: {
-											__html: React.renderToString(React.createElement(YouBikeSiteList, {
+											__html: React.renderToString(React.createElement(YouBikeSiteTable, {
 												siteList: sites
 											}))
 										}
@@ -135,6 +135,11 @@ module.exports = function(app)
 					{
 						return res.redirect('/');
 					}
+		});
+	});
+	app.get('/browserify', function(req, res){
+		res.render('browserify', {
+			title : 'browserify test'
 		});
 	});
 	app.get('/react', function(req, res){

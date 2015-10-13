@@ -1,6 +1,21 @@
 var React = require('react');
-var YouBikeSite = require('./YouBikeSite.jsx');
+var YouBikeSite = require('./YouBikeSite.js');
 
+var YouBikeSiteRow = React.createClass({
+	render : function(){
+		console.log('YouBikeSiteList');
+		return (
+			<div className="dataBody">
+				{this.props.siteList.map(function(site) {
+					//console.log(site);
+       					return (<YouBikeSite site={site} />);
+       				})}
+			</div>
+		);
+	}
+});
+module.exports = YouBikeSiteRow;
+/*
 var YouBikeSiteList = React.createClass({
 	propTypes: {
     		siteList: React.PropTypes.array
@@ -34,3 +49,4 @@ var YouBikeSiteList = React.createClass({
 });
 
 module.exports = YouBikeSiteList;
+*/
