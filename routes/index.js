@@ -3,6 +3,7 @@ var crypto = require('crypto'),
 	Post = require('../models/post.js'),
 	Comment = require('../models/comment.js'),
 	React = require('react'),
+    ReactDOMServer = require('react-dom/server'),
 	request = require('request'),
 	jsx = require('node-jsx').install();
 
@@ -41,10 +42,10 @@ module.exports = function(app)
 //		);
 //		res.end(htmlPeice);
 //	});
-    app.get('/youbike', function(req, res){
-        res.render('youBike');
-    });
-    app.get('/youbike/:pageSize/:offset', function(req, res){
+    	app.get('/youbike', function(req, res){
+        		res.render('youBike');
+    	});
+    	app.get('/youbike/:pageSize/:offset', function(req, res){
 		var pageSize = req.params.pageSize,
 			offset = req.params.offset;
 		request('http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=ddb80380-f1b3-4f8e-8016-7ed9cba571d5&limit=' + pageSize + '&offset=' + offset, 
@@ -58,7 +59,7 @@ module.exports = function(app)
 						res.end(body);
 					}
 		})
-    });
+    	});
 	app.get('/youbike/:pg', function(req, res)
 	{
 		var pageSize = 20,
@@ -72,15 +73,10 @@ module.exports = function(app)
 					}
 					else if(response.statusCode == 200)
 					{
-						//data = body;
 						var data = JSON.parse(body),
 							sites = data.result.results ||[];
-						//console.log(body);
 						
-						//res.render('apiTest', {dataSet : data});
-						//res.setHeader('Content-Type', 'text/html');
-
-						var htmlPeice = React.renderToStaticMarkup(
+						var htmlPeice = ReactServer.renderToStaticMarkup(
 									React.DOM.div({
 										id: 'container',
 										className : 'container',
@@ -92,41 +88,46 @@ module.exports = function(app)
 										}
 									})
 								);
-						// var htmlPeice = React.renderToStaticMarkup(
-						// 		React.DOM.html(
-						// 			null, 
-						// 			React.DOM.head(
-						// 			 	null,
-						// 			 	React.DOM.link({
-						// 			 		'type' : 'text/css',
-						// 			 		'rel' : 'stylesheet',
-						// 			 		'href' : 'css/bootstrap.min.css'
-						// 			 	})
-						// 			 ),
-						// 			React.DOM.body(
-						// 				null,
-						// 				React.DOM.div({
-						// 					id: 'container',
-						// 					dangerouslySetInnerHTML: {
-						// 						__html: React.renderToString(React.createElement(YouBikeSiteList, {
-						// 							siteList: sites
-						// 						}))
-						// 					}
-						// 				}),
-						// 				React.DOM.script({
-						// 					'type': 'text/javascript',
-						// 					'src': 'js/jquery.min.js'
-						// 				}),
-						// 				React.DOM.script({
-						// 					'type': 'text/javascript',
-						// 					'src': 'js/bootstrap.min.js'
-						// 				})
-						// 			)
-				  // 				)
-						// 	);
-						//res.end(htmlPeice); //render all html with React
-						//console.log(htmlPeice);
 						res.render('myLayout',{
+							title : 'YouBike',
+							htmlPeice : htmlPeice
+						});	
+					}
+					else
+					{
+						return res.redirect('/');
+					}
+		});
+	});
+	app.get('/youbikelist', function(req, res)
+	{
+		var pageSize = 10,
+			offset = 0;
+		console.log('offset: ' + offset);
+		request('http://data.taipei/opendata/datalist/apiAccess?scope=resourceAquire&rid=ddb80380-f1b3-4f8e-8016-7ed9cba571d5&limit=' + pageSize + '&offset=' + offset, 
+				function(err, response, body){
+					if (err)
+					{
+						console.error(err);
+					}
+					else if(response.statusCode == 200)
+					{
+						var data = JSON.parse(body),
+							sites = data.result.results ||[];
+						
+						var htmlPeice = React.renderToStaticMarkup(
+									React.DOM.div({
+										id: 'container',
+										className : 'container',
+										style : {'margin-top' : '50px'},
+										dangerouslySetInnerHTML: {
+											__html: React.renderToStaticMarkup(React.createElement(YouBikeSiteTable, {
+												siteList: sites
+											}))
+										}
+									})
+								);
+						res.render('youBikeList',{
 							title : 'YouBike',
 							htmlPeice : htmlPeice
 						});	

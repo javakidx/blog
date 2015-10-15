@@ -14,14 +14,15 @@
     "morgan": "~1.6.1",
     "serve-favicon": "~2.3.0",
     "express-session": "1.9.1",
-    "express-react-views":"~0.8.2",
+    "express-react-views":"^0.9.0",
     "connect-flash": "0.1.1",
     "mongodb": "1.4.15",
     "connect-mongo": "0.8.2",
     "markdown": "0.5.0",
     "multer": "0.1.6",
 	"node-jsx" : "^0.13.3",
-	"react" : "^0.13.3",
+	"react" : "^0.14.0",
+	"react-dom": "^0.14.0",
 	"request" : "2.64.0"
   },
   "devDependencies": {
