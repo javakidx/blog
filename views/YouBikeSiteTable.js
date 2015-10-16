@@ -168,7 +168,17 @@ var YouBikeSite = React.createClass({
 	},
   	render : function(){
 		var site = this.state.site = this.props.site;
-  		return div({
+  		return (
+  			<div className="row">
+  				<div className="column">{site.sno}</div>
+  				<div className="column">{site.sarea}</div>
+  				<div className="column">{site.sna}</div>
+  				<div className="column">{site.sbi}</div>
+  				<div className="column">{site.mday}</div>
+  			</div>
+  		);
+        /*
+        div({
             className : "row",
             onClick : this.showData,
             "data-site" : JSON.stringify(this.state.site)
@@ -180,16 +190,6 @@ var YouBikeSite = React.createClass({
             div({className : "column", key : site.no + "3"}, site.sbi),
             div({className : "column", key : site.no + "4"}, site.mday),
         ]);
-        /*
-        (
-  			<div className="row">
-  				<div className="column">{site.sno}</div>
-  				<div className="column">{site.sarea}</div>
-  				<div className="column">{site.sna}</div>
-  				<div className="column">{site.sbi}</div>
-  				<div className="column">{site.mday}</div>
-  			</div>
-  		);
         */
   	}
 });
