@@ -50,6 +50,7 @@ var YouBikeSiteTable = React.createClass({
 		this.loadYouBikeSiteInfo();
 	},
 	render : function(){
+            /*
 		return div({
                     className : "youBikeView",
                     children : [
@@ -76,8 +77,8 @@ var YouBikeSiteTable = React.createClass({
                         button({onClick : this.nextPage}, "下一頁"),
                 ]
                 });
-            /*
-            (
+            */
+        return (
 			<div className="youBikeView">
 				<h2>YouBike Site Information</h2>
 				<div className="youBikeTable">
@@ -96,21 +97,21 @@ var YouBikeSiteTable = React.createClass({
 				<button onClick={this.nextPage}>下一頁</button>
 			</div>
 		)
-            */
 	}
 });
 
 var YouBikeSiteRow = React.createClass({
 	render : function(){
 //        var youBikeSite = React.createFactory(YouBikeSite);
+        /*
 		return div({
             className : "dataBody",
             children : this.props.siteList.map(function(site, index){
                 return React.createElement(YouBikeSite, {site : site, key : index});
             })
         });
-        /*
-        (
+        */
+        return (
 			<div className="dataBody">
 				{this.props.siteList.map(function(site) {
 					//console.log(site);
@@ -118,7 +119,6 @@ var YouBikeSiteRow = React.createClass({
        				})}
 			</div>
 		);
-        */
 	}
 });
 // var YouBikeSiteDetail = React.createClass({

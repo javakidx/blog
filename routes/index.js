@@ -184,6 +184,7 @@ module.exports = function(app)
 	});
 	app.get('/', function(req, res)
 	{
+        res.end('Why are you here? Something wrong?');
 		var page = req.body.p ? parseInt(req.body.p) : 1;
 
 		// Post.getAll(null, function(err, posts)
